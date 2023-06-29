@@ -1,0 +1,17 @@
+Dockerfile
+.dockerignore
+node_modules
+npm-debug.log
+README.md
+.next
+.git
+.gitignore
+__tests__
+.env.example
+.prettierignore
+.prettierrc.json
+.storybook
+.vscode
+docker-compose.yml
+jest.config.mjs
+next-env.d.ts
