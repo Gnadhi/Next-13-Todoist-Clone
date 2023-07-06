@@ -2,13 +2,14 @@
 
 import * as React from "react";
 
+import Link from "next/link";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,
@@ -29,58 +30,52 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Project } from "@prisma/client";
 import { Check, ChevronsUpDown, PlusCircle } from "lucide-react";
-
-const groups = [
-  {
-    label: "Personal Account",
-    teams: [
-      {
-        label: "Alicia Koch",
-        value: "personal",
-      },
-    ],
-  },
-  {
-    label: "Teams",
-    teams: [
-      {
-        label: "Acme Inc.",
-        value: "acme-inc",
-      },
-      {
-        label: "Monsters Inc.",
-        value: "monsters",
-      },
-    ],
-  },
-];
-
-type Team = (typeof groups)[number]["teams"][number];
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
 >;
 
-interface TeamSwitcherProps extends PopoverTriggerProps {}
+interface ProjectSwitcherProps extends PopoverTriggerProps {
+  projects: Project[];
+  onNewProjectCreate: (projectName: string) => void;
+}
 
-export default function ProjectSwitcher({ className }: TeamSwitcherProps) {
+const schema = z.object({
+  projectName: z
+    .string()
+    .min(1, { message: "Project name is required" })
+    .max(24, "Projects can only be 24 characters long"),
+});
+
+export default function ProjectSwitcher({
+  className,
+  projects,
+  onNewProjectCreate,
+}: ProjectSwitcherProps) {
   const [open, setOpen] = React.useState(false);
-  const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
-  const [selectedTeam, setSelectedTeam] = React.useState<Team>(
-    groups[0].teams[0]
+  const [showNewProjectDialog, setShowNewProjectDialog] = React.useState(false);
+  const [selectedProject, setSelectedProject] = React.useState<Project>(
+    projects[0]
   );
+  const [isPending, startTransition] = React.useTransition();
+
+  const {
+    register,
+    handleSubmit,
+
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
 
   return (
-    <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
+    <Dialog open={showNewProjectDialog} onOpenChange={setShowNewProjectDialog}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -92,52 +87,49 @@ export default function ProjectSwitcher({ className }: TeamSwitcherProps) {
           >
             <Avatar className="mr-2 h-5 w-5">
               <AvatarImage
-                src={`https://avatar.vercel.sh/${selectedTeam.value}.png`}
-                alt={selectedTeam.label}
+                src={`https://avatar.vercel.sh/${selectedProject.id}.png`}
+                alt={selectedProject.name}
                 className="grayscale"
               />
               <AvatarFallback>SC</AvatarFallback>
             </Avatar>
-            {selectedTeam.label}
+            {selectedProject.name}
             <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0">
           <Command>
             <CommandList>
-              <CommandInput placeholder="Search team..." />
               <CommandEmpty>No team found.</CommandEmpty>
-              {groups.map((group) => (
-                <CommandGroup key={group.label} heading={group.label}>
-                  {group.teams.map((team) => (
-                    <CommandItem
-                      key={team.value}
-                      onSelect={() => {
-                        setSelectedTeam(team);
-                        setOpen(false);
-                      }}
-                      className="text-sm"
-                    >
-                      <Avatar className="mr-2 h-5 w-5">
-                        <AvatarImage
-                          src={`https://avatar.vercel.sh/${team.value}.png`}
-                          alt={team.label}
-                          className="grayscale"
-                        />
-                        <AvatarFallback>SC</AvatarFallback>
-                      </Avatar>
-                      {team.label}
-                      <Check
-                        className={cn(
-                          "ml-auto h-4 w-4",
-                          selectedTeam.value === team.value
-                            ? "opacity-100"
-                            : "opacity-0"
-                        )}
+              {projects.map((project) => (
+                <Link key={project.id} href={`/app/project/${project.id}`}>
+                  <CommandItem
+                    key={project.id}
+                    onSelect={() => {
+                      setSelectedProject(project);
+                      setOpen(false);
+                    }}
+                    className="text-sm"
+                  >
+                    <Avatar className="mr-2 h-5 w-5">
+                      <AvatarImage
+                        src={`https://avatar.vercel.sh/${project.id}.png`}
+                        alt={project.name}
+                        className="grayscale"
                       />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                      <AvatarFallback>SC</AvatarFallback>
+                    </Avatar>
+                    {project.name}
+                    <Check
+                      className={cn(
+                        "ml-auto h-4 w-4",
+                        selectedProject.id === project.id
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                    />
+                  </CommandItem>
+                </Link>
               ))}
             </CommandList>
             <CommandSeparator />
@@ -147,11 +139,11 @@ export default function ProjectSwitcher({ className }: TeamSwitcherProps) {
                   <CommandItem
                     onSelect={() => {
                       setOpen(false);
-                      setShowNewTeamDialog(true);
+                      setShowNewProjectDialog(true);
                     }}
                   >
                     <PlusCircle className="mr-2 h-5 w-5" />
-                    Create Team
+                    Create New Project
                   </CommandItem>
                 </DialogTrigger>
               </CommandGroup>
@@ -161,48 +153,37 @@ export default function ProjectSwitcher({ className }: TeamSwitcherProps) {
       </Popover>
       {/* This is to create a new project */}
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>New Project</DialogTitle>
-          <DialogDescription>
-            Add a new project to organise your tasks
-          </DialogDescription>
-        </DialogHeader>
-        <div>
-          <div className="space-y-4 py-2 pb-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Team name</Label>
-              <Input id="name" placeholder="Acme Inc." />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="plan">Subscription plan</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a plan" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="free">
-                    <span className="font-medium">Free</span> -{" "}
-                    <span className="text-muted-foreground">
-                      Trial for two weeks
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="pro">
-                    <span className="font-medium">Pro</span> -{" "}
-                    <span className="text-muted-foreground">
-                      $9/month per user
-                    </span>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+        <form
+onSubmit={handleSubmit(({ projectName }) => startTransition(() => onNewProjectCreate(projectName)))}
+        >
+          <DialogHeader>
+            <DialogTitle>New Project</DialogTitle>
+            <DialogDescription>
+              Add a new project to organise your tasks
+            </DialogDescription>
+          </DialogHeader>
+          <div>
+            <div className="space-y-4 py-2 pb-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Project</Label>
+                <Input
+                  id="name"
+                  placeholder="Acme Inc."
+                  {...register("projectName")}
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setShowNewTeamDialog(false)}>
-            Cancel
-          </Button>
-          <Button type="submit">Continue</Button>
-        </DialogFooter>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowNewProjectDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isPending}>Continue</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
