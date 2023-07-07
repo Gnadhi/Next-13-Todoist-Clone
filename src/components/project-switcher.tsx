@@ -68,8 +68,6 @@ export default function ProjectSwitcher({
   const {
     register,
     handleSubmit,
-
-    formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
   });
@@ -154,8 +152,7 @@ export default function ProjectSwitcher({
       {/* This is to create a new project */}
       <DialogContent>
         <form
-onSubmit={handleSubmit(({ projectName }) => startTransition(() => onNewProjectCreate(projectName)))}
-        >
+onSubmit={handleSubmit(({ projectName }) => startTransition(() => onNewProjectCreate(projectName)))}>
           <DialogHeader>
             <DialogTitle>New Project</DialogTitle>
             <DialogDescription>

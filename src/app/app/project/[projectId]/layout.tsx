@@ -1,8 +1,12 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
+
 import { createNewProjectForUser } from "./actions";
 import ProjectSwitcher from "@/components/project-switcher";
 import { Search } from "@/components/search";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserNav } from "@/components/user-nav";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
 
@@ -16,13 +20,18 @@ async function getProjectsForUser(userId: string) {
 
 export default async function RootLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   const user = await getCurrentUser();
 
-  // TODO: Add a redirect if user is not logged in
-  const projects = await getProjectsForUser(user?.id as string);
+  if (!user) {
+    redirect(authOptions.pages?.signIn || "/login");
+  }
+
+  const projects = await getProjectsForUser(user.id);
 
   return (
     <>
@@ -41,6 +50,7 @@ export default async function RootLayout({
           </div>
         </div>
       </div>
+      {modal}
       {JSON.stringify(projects)}
       {children}
     </>
