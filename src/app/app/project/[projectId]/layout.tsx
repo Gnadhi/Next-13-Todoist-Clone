@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { createNewProjectForUser } from "./actions";
@@ -50,9 +49,9 @@ export default async function RootLayout({
           </div>
         </div>
       </div>
-      {modal}
       {JSON.stringify(projects)}
       {children}
+      {modal}
     </>
   );
 }
