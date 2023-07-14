@@ -35,6 +35,18 @@ export const authOptions: NextAuthOptions = {
           data: {
             name: "Inbox",
             userId: user.id,
+            todos: {
+              createMany: {
+                // This is the demo todos that are created
+                data: [
+                  {
+                    description: "Something very important todo !",
+                    dueDate: new Date(),
+                    isCompleted: false,
+                  },
+                ],
+              },
+            },
           },
         });
       }

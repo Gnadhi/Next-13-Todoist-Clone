@@ -2,7 +2,7 @@
 
 import { signIn } from "next-auth/react";
 
-const IndexPage = async () => {
+const IndexPage = () => {
   return (
     <>
       <button onClick={() => signIn()}> Sign in </button>

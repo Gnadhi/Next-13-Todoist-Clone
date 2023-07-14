@@ -1,5 +1,6 @@
 "use client";
 
-export default async function DemoPage() {
+// This is where all the todos are displayed
+export default async function ProjectPage() {
   return <>Home Page</>;
 }

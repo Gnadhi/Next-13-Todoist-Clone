@@ -1,3 +1,7 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -6,18 +10,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function DialogDemo() {
+export function TodoDialog() {
+  const router = useRouter();
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={true}>
+      <DialogContent className="sm:max-w-[425px]" onClose={() => router.back()}>
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
           <DialogDescription>

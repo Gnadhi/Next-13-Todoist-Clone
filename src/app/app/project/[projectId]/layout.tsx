@@ -49,7 +49,6 @@ export default async function RootLayout({
           </div>
         </div>
       </div>
-      {JSON.stringify(projects)}
       {children}
       {modal}
     </>

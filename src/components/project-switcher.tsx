@@ -65,10 +65,7 @@ export default function ProjectSwitcher({
   );
   const [isPending, startTransition] = React.useTransition();
 
-  const {
-    register,
-    handleSubmit,
-  } = useForm({
+  const { register, handleSubmit } = useForm({
     resolver: zodResolver(schema),
   });
 
@@ -152,7 +149,10 @@ export default function ProjectSwitcher({
       {/* This is to create a new project */}
       <DialogContent>
         <form
-onSubmit={handleSubmit(({ projectName }) => startTransition(() => onNewProjectCreate(projectName)))}>
+          onSubmit={handleSubmit(({ projectName }) =>
+            startTransition(() => onNewProjectCreate(projectName))
+          )}
+        >
           <DialogHeader>
             <DialogTitle>New Project</DialogTitle>
             <DialogDescription>
@@ -178,7 +178,9 @@ onSubmit={handleSubmit(({ projectName }) => startTransition(() => onNewProjectCr
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending}>Continue</Button>
+            <Button type="submit" disabled={isPending}>
+              Continue
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
