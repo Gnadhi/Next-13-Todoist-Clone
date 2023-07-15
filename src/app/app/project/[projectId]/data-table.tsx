@@ -1,5 +1,7 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
+
 import {
   Table,
   TableBody,
@@ -30,6 +32,15 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const router = useRouter();
+
+  const pathname = usePathname();
+
+  const handleRowClick = (todoId: string) => {
+    // @ts-ignore
+    router.push(`${pathname}/todo/${todoId}`);
+  };
+
   return (
     <div className="rounded-md border">
       <Table>
@@ -54,17 +65,12 @@ export function DataTable<TData, TValue>({
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
+              //@ts-ignore
+              <TableRow onClick={() => handleRowClick(row.original.id)}>
                 {row.getVisibleCells().map((cell) => (
-                  <>
-                    {JSON.stringify(cell.id)}
-                    <TableCell key={cell.id} className="bg-white">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  </>
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
                 ))}
               </TableRow>
             ))

@@ -1,18 +1,17 @@
 import { redirect } from "next/navigation";
 
 import { columns } from "./columns";
-import { DataTable } from "@/app/todo/data-table";
+import { DataTable } from "./data-table";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
-
-export const revalidate = 0;
 
 // Displays the todos for the project
 async function getTodosForProject(userId: string, projectId: string) {
   return await prisma.todoItem.findMany({
     where: {
       project: {
+        id: projectId,
         userId,
       },
     },
@@ -34,7 +33,6 @@ export default async function Page({
 
   return (
     <>
-      {JSON.stringify(todos)}
       <DataTable columns={columns} data={todos} />
     </>
   );

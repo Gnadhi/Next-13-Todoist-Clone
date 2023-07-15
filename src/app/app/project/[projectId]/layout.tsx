@@ -9,6 +9,8 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
 
+export const revalidate = 0;
+
 async function getProjectsForUser(userId: string) {
   return await prisma.project.findMany({
     where: {
