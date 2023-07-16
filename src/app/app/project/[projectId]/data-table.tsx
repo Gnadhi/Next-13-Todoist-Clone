@@ -66,7 +66,7 @@ export function DataTable<TData, TValue>({
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               //@ts-ignore
-              <TableRow onClick={() => handleRowClick(row.original.id)}>
+              <TableRow key={row.id} onClick={() => handleRowClick(row.original.id)} >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
