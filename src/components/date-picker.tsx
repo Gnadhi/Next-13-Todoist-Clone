@@ -20,8 +20,14 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { addDays, format, subDays } from "date-fns";
 
-export function DatePicker() {
-  const [date, setDate] = React.useState<Date>();
+export function DatePicker({ defaultDate }: { defaultDate: Date }) {
+  const [date, setDate] = React.useState<Date>(defaultDate);
+
+ const onSelect: SelectSingleEventHandler = (selectedDate: Date | undefined) => {
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
+  };
 
   return (
     <Popover>
@@ -29,7 +35,7 @@ export function DatePicker() {
         <Button
           variant="outline"
           className={cn(
-            "w-[120px] justify-start text-left font-normal",
+            "w-[160px] justify-start text-left font-normal",
             !date && "text-muted-foreground"
           )}
         >
@@ -45,8 +51,8 @@ export function DatePicker() {
           <Calendar
             mode="single"
             selected={date}
-            onSelect={setDate}
-            disabled={(date) => date < subDays(new Date(), 1)}
+            onSelect={onSelect}
+            disabled={(day) => day < subDays(new Date(), 1)}
           />
         </div>
         <Select

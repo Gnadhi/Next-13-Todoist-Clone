@@ -1,6 +1,6 @@
 import { prisma } from "./prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import type { NextAuthOptions, Session } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 
 export const authOptions: NextAuthOptions = {
@@ -35,11 +35,13 @@ export const authOptions: NextAuthOptions = {
           data: {
             name: "Inbox",
             userId: user.id,
+            isInbox: true,
             todos: {
               createMany: {
                 // This is the demo todos that are created
                 data: [
                   {
+                    name: "This is a new todo",
                     description: "Something very important todo !",
                     dueDate: new Date(),
                     isCompleted: false,

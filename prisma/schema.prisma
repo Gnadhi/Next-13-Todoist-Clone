@@ -8,21 +8,31 @@ datasource db {
 }
 
 model Project {
-  id     String     @id @default(cuid())
-  name   String
-  todos  TodoItem[]
-  userId String
-  user   User       @relation(fields: [userId], references: [id])
+  id      String     @id @default(cuid())
+  name    String
+  todos   TodoItem[]
+  userId  String
+  user    User       @relation(fields: [userId], references: [id])
+  isInbox Boolean    @default(false)
+}
+
+enum Priority {
+  HIGH
+  MEDIUM
+  LOW
+  NONE
 }
 
 model TodoItem {
-  id          String   @id @default(cuid())
-  description String
-  dueDate     DateTime
-  isCompleted Boolean  @default(false)
-  dateAdded   DateTime @default(now())
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  dueDate     DateTime?
+  priority    Priority  @default(NONE)
+  isCompleted Boolean   @default(false)
+  dateAdded   DateTime  @default(now())
   projectId   String
-  project     Project  @relation(fields: [projectId], references: [id])
+  project     Project   @relation(fields: [projectId], references: [id])
 }
 
 // Need for next auth 

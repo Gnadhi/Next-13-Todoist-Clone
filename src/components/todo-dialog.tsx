@@ -21,7 +21,7 @@ import {
 } from "@radix-ui/react-select";
 
 export function TodoDialog({
-  todo: { id, description, isCompleted, dueDate },
+  todo: { id, description, isCompleted, dueDate, name, priority },
 }: {
   todo: TodoItem;
 }) {
@@ -44,10 +44,11 @@ export function TodoDialog({
               className="peer"
               autoFocus={false}
               id="description"
-              defaultValue={description}
+              defaultValue={name}
               placeholder="Description"
             />
             <Textarea
+              defaultValue={description || ""}
               className="peer"
               rows={5}
               id="description"
@@ -65,19 +66,19 @@ export function TodoDialog({
               <Label htmlFor="dueDate" className="text-muted-foreground">
                 Due Date
               </Label>
-              <DatePicker />
+              <DatePicker defaultValue={dueDate} />
             </div>
             <Separator orientation="horizontal" />
 
             <div className="flex flex-col space-y-2">
               <Label htmlFor="dueDate" className="text-muted-foreground ">
-                Due Date
+                Priority
               </Label>
               <Select>
                 <SelectTrigger>
                   <Button
                     variant="outline"
-                    className="w-[120px] justify-start text-left font-normal"
+                    className="w-[160px] justify-start text-left font-normal"
                   >
                     dfdf
                   </Button>
