@@ -65,8 +65,11 @@ export function DataTable<TData, TValue>({
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              //@ts-ignore
-              <TableRow key={row.id} onClick={() => handleRowClick(row.original.id)} >
+              <TableRow
+                key={row.id}
+                //@ts-ignore
+                onClick={() => handleRowClick(row.original.id)}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -77,7 +80,7 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                <p> Add a Todo </p>
               </TableCell>
             </TableRow>
           )}

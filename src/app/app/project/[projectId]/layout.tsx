@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Search } from "@/components/search";
 import { Sidebar } from "@/components/sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -13,7 +14,7 @@ import { UserNav } from "@/components/user-nav";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
-import { Menu } from "lucide-react";
+import { Menu, Plus } from "lucide-react";
 
 export const revalidate = 0;
 
@@ -59,9 +60,25 @@ export default async function RootLayout({
               </TooltipContent>
             </Tooltip>
             <Tooltip>
-              <Search />
+              <TooltipTrigger asChild>
+                <Search disabled />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p> Not yet implemented </p>
+              </TooltipContent>
             </Tooltip>
             <div className="ml-auto flex items-center space-x-4">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant={"outline"}>
+                    <Plus />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p> New Todo </p>
+                </TooltipContent>
+              </Tooltip>
+
               <ThemeToggle />
               <UserNav />
             </div>

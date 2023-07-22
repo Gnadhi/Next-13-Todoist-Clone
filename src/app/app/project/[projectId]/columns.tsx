@@ -2,13 +2,14 @@
 
 import { updateTodoForUser } from "./actions";
 import { Checkbox } from "@/components/ui/checkbox";
-import { TodoItem } from "@prisma/client";
+import { Priority, TodoItem } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
+import { Flag } from "lucide-react";
 
-//TOOD: Fix later to use zod correctly
 export const columns: ColumnDef<TodoItem>[] = [
   {
+    header: () => <></>,
     accessorKey: "isCompleted",
     cell: ({ row }) => (
       <Checkbox
@@ -19,22 +20,41 @@ export const columns: ColumnDef<TodoItem>[] = [
           });
         }}
         aria-label="Select all"
-        className="translate-y-[2px]"
+        className="translate-y-[2px] h-6 w-6 rounded-full"
       />
     ),
   },
   {
-    accessorKey: "description",
-    cell: ({ cell }) => <>{cell.getValue()}</>,
+    header: "Name",
+    accessorKey: "name",
   },
   {
+    header: "Description",
+    accessorKey: "description",
+  },
+  {
+    header: "Priority",
+    accessorKey: "priority",
+    cell: ({ row }) => {
+      switch (row.getValue("priority")) {
+        case Priority.HIGH:
+          return <>High</>;
+        case Priority.MEDIUM:
+          return <>Medium</>;
+        case Priority.LOW:
+          return <>Low</>;
+        default:
+          return <>None</>;
+      }
+    },
+  },
+  {
+    header: "Due Date",
     accessorKey: "dueDate",
-    cell: ({ row }) => (
-      <>
-        {formatDistanceToNow(row.getValue("dueDate"), {
-          addSuffix: true,
-        })}
-      </>
-    ),
+    cell: ({ row }) => {
+      return formatDistanceToNow(row.getValue("dueDate"), {
+        addSuffix: true,
+      });
+    },
   },
 ];
